@@ -67,7 +67,7 @@ g = Flatten()(g)
 fc6_global = Dense(4096, activation='relu', name='fc6_global')(g)
 
 
-outputs=[loc,vis1,vis2,vis3,vis4]
+outputs=[loc, vis1, vis2, vis3, vis4, fc6_global]
 
 model = Model(input=inputs, output=outputs)
 model.summary()
