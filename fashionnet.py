@@ -32,26 +32,39 @@ x = ZeroPadding2D(padding=(1,1), name='pad4_2')(x)
 x = Convolution2D(512, 3, 3, activation='relu', name='conv4_3')(x)
 pad4_3 = ZeroPadding2D(padding=(1,1), name='pad4_3')(x)
 # pad4_3 -> conv5_local
-x = MaxPooling2D(pool_size=(2,2), name='pool4')(pad4_3)
 
 # POSE
-p = Convolution2D(512, 3, 3, activation='relu', name='conv5_pose_1')(x)
+p = MaxPooling2D(pool_size=(2,2), name='pool4_pose')(pad4_3)
+p = Convolution2D(512, 3, 3, activation='relu', name='conv5_pose_1')(p)
 p = ZeroPadding2D(padding=(1,1), name='pad5_pose_1')(p)
 p = Convolution2D(512, 3, 3, activation='relu', name='conv5_pose_2')(p)
 p = ZeroPadding2D(padding=(1,1), name='pad5_pose_2')(p)
 p = Convolution2D(512, 3, 3, activation='relu', name='conv5_pose_3')(p)
 p = ZeroPadding2D(padding=(1,1), name='pad5_pose_3')(p)
-p = MaxPooling2D(pool_size=(2,2), name='pool5')(p)
+p = MaxPooling2D(pool_size=(2,2), name='pool5_pose')(p)
 p = Flatten()(p)
 p = Dense(1024, activation='relu', name='fc6_pose')(p)
 p = Dense(1024, activation='relu', name='fc7_pose')(p)
 loc = Dense(8, activation='linear',name='location')(p)
-vis1 = Dense(2, activation='softmax', name='vis1')(p)
-vis2 = Dense(2, activation='softmax', name='vis2')(p)
-vis3 = Dense(2, activation='softmax', name='vis3')(p)
-vis4 = Dense(2, activation='softmax', name='vis4')(p)
+vis1 = Dense(2, activation='softmax', name='visibility1')(p)
+vis2 = Dense(2, activation='softmax', name='visibility2')(p)
+vis3 = Dense(2, activation='softmax', name='visibility3')(p)
+vis4 = Dense(2, activation='softmax', name='visibility4')(p)
+
+# LOCAL
 
 
+# GLOBAL
+g = MaxPooling2D(pool_size=(2,2), name='pool4_global')(pad4_3)
+g = Convolution2D(512, 3, 3, activation='relu', name='conv5_global_1')(g)
+g = ZeroPadding2D(padding=(1,1), name='pad5_global_1')(g)
+g = Convolution2D(512, 3, 3, activation='relu', name='conv5_global_2')(g)
+g = ZeroPadding2D(padding=(1,1), name='pad5_global_2')(g)
+g = Convolution2D(512, 3, 3, activation='relu', name='conv5_global_3')(g)
+g = ZeroPadding2D(padding=(1,1), name='pad5_global_3')(g)
+g = MaxPooling2D(pool_size=(2,2), name='pool5_global')(g)
+g = Flatten()(g)
+fc6_global = Dense(4096, activation='relu', name='fc6_global')(g)
 
 
 outputs=[loc,vis1,vis2,vis3,vis4]
